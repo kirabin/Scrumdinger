@@ -16,7 +16,7 @@ struct DetailView: View {
         List {
             Section(header: Text("Meeting Info"), content: {
                 NavigationLink(
-                    destination: MeetingView(),
+                    destination: MeetingView(scrum: $scrum),
                     label: {
                         Label("Start Meeting", systemImage: "timer")
                             .font(.headline)
@@ -31,7 +31,7 @@ struct DetailView: View {
                 HStack {
                     Label("Color", systemImage: "paintpalette")
                     Spacer()
-                    Image(systemName: "checkmark.circle.fill")
+                    Image(systemName: "circle.fill")
                         .foregroundColor(scrum.color)
                 }
                 .accessibilityElement(children: .ignore)
@@ -66,10 +66,27 @@ struct DetailView: View {
     }
 }
 
+struct BindingProvider<StateT, Content: View>: View {
+
+    @State private var state: StateT
+    private var content: (_ binding: Binding<StateT>) -> Content
+
+    init(_ initialState: StateT, @ViewBuilder content: @escaping (_ binding: Binding<StateT>) -> Content) {
+        self.content = content
+        self._state = State(initialValue: initialState)
+    }
+
+    var body: some View {
+        self.content($state)
+    }
+}
+
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            DetailView(scrum: .constant(DailyScrum.data[0]))
+            BindingProvider(DailyScrum.data[0]) { binding in
+                DetailView(scrum: binding)
+            }
         }
     }
 }
