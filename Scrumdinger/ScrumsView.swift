@@ -13,18 +13,16 @@ struct ScrumsView: View {
     var body: some View {
         List {
             ForEach(scrums, content: { scrum in
-                NavigationLink(
-                    destination: DetailView(scrum: binding(for: scrum)),
-                    label: {
-                        CardView(scrum: scrum)
-                })
-                    .listRowBackground(scrum.color)
+                NavigationLink(destination: DetailView(scrum: binding(for: scrum))) {
+                    CardView(scrum: scrum)
+                }
+                .listRowBackground(scrum.color)
             })
         }
         .navigationTitle("Daily Scrums")
-        .navigationBarItems(trailing: Button(action: {}, label: {
+        .navigationBarItems(trailing: Button(action: {}) {
             Image(systemName: "plus")
-        }))
+        })
     }
     
     private func binding(for scrum: DailyScrum) -> Binding<DailyScrum> {
